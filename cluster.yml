@@ -9,9 +9,12 @@
     grid_router_regions:
       - name: "company"
         hosts:
-          - name: 184.73.54.255
+          - name: 3.81.94.128
             port: 4444
             browser_count: 4
+          - name: 54.198.232.156
+            port: 4444
+            browser_count: 4  
 
     grid_router_browsers:
       - name: "chrome"
@@ -25,8 +28,8 @@
 - hosts: selenoid-nodes
   vars:
     selenoid_version: 1.10.10
-    selenoid_cm_version: 1.8.4
-    selenoid_docker_api_version: 1.35
+    selenoid_cm_version: 1.8.5
+    selenoid_docker_api_version: "1.42"
     selenoid_limit: 4
     selenoid_tmpfs: 512
     selenoid_timeout: 400s
@@ -35,6 +38,8 @@
     selenoid_browsers_last_versions: 3
     selenoid_browsers:
       - chrome
+    selenoid_ui_version: 1.10.10
+    selenoid_ui_port: 8080  
   roles:
     - selenoid-docker
 

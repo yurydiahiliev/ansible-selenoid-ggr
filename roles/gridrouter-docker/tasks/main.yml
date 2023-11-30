@@ -1,4 +1,41 @@
 ---
+- name: Install required system packages
+  become: yes
+  become_user: root
+  apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+    state: latest
+    update_cache: true
+
+- name: Add Docker GPG apt Key
+  become: yes
+  become_user: root
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  become: yes
+  become_user: root
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Update apt and install docker-ce
+  become: yes
+  become_user: root
+  apt:
+    name: docker-ce
+    state: latest
+    update_cache: true
+        
 - name: Grid Router | Install certain python modules for docker
   pip:
     name: "{{ item.name }}"
@@ -12,6 +49,7 @@
     dest: /usr/local/bin/sctl
     mode: 0755
   changed_when: False
+  become: yes
 
 - name: Grid Router | Create config dir
   file:
@@ -36,6 +74,8 @@
     mode: 0640
 
 - name: Grid Router | Run Grid Router container
+  become: yes
+  become_user: root
   docker_container:
     name: ggr
     restart_policy: always
@@ -51,5 +91,7 @@
     - "{{ grid_router_port }}:4444"
 
 - name: Reload GGR
+  become: yes
+  become_user: root
   shell: "docker kill -s HUP ggr"
 
