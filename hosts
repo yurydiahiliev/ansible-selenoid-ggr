@@ -1,0 +1,16 @@
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_user=ubuntu
+
+[ggr]
+172.28.28.217
+
+[selenoid-nodes]
+172.28.27.84
+172.28.27.89
+172.28.27.90
+172.28.27.65
+172.28.28.8
+172.28.28.217
+172.28.28.76
+

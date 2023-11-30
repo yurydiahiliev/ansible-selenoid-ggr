@@ -1,0 +1,31 @@
+---
+- hosts: selenoid-nodes
+  tasks:
+    - name: Copy telegraf config
+      copy:
+        src: telegraf.conf
+        dest: "{{ ansible_env.HOME }}/telegraf"
+
+    - name: Selenoid | Check selenoid container exist
+      shell: 'docker ps -aq --filter "name={{ item }}"'
+      with_items:
+        - 'telegraf'
+      register: found_containers
+
+    - name: Selenoid | Remove selenoid container if exist
+      shell: 'docker stop {{ item.item }} && docker rm -fv {{ item.item }}'
+      with_items: '{{ found_containers.results }}'
+      when: item.stdout
+
+    - name: Start telegraf
+      docker_container:
+        image: telegraf:latest
+        name: telegraf
+        state: started
+        links:
+          - selenoid
+        volumes:
+          - "{{ ansible_env.HOME }}/telegraf:/etc/telegraf/telegraf.conf:ro"
+        env:
+          INFLUXDB_URI: "http://172.28.28.217:8086"
+          HOST_IP: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
