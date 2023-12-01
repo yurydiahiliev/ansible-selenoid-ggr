@@ -2,10 +2,11 @@
 ansible_python_interpreter=/usr/bin/python3
 ansible_user=ubuntu
 ansible_ssh_private_key_file=~/.ssh/test.pem
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [ggr]
-54.164.147.6
+54.162.198.97
 
 [selenoid-nodes]
-54.198.232.156
-3.81.94.128
+54.144.31.62
+54.86.194.83

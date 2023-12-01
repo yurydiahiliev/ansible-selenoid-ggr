@@ -9,10 +9,10 @@
     grid_router_regions:
       - name: "company"
         hosts:
-          - name: 3.81.94.128
+          - name: 54.144.31.62
             port: 4444
             browser_count: 4
-          - name: 54.198.232.156
+          - name: 54.86.194.83
             port: 4444
             browser_count: 4  
 
@@ -35,7 +35,7 @@
     selenoid_timeout: 400s
     selenoid_config_dir: "{{ ansible_env.HOME }}/selenoid"
     selenoid_listen_port: 4444
-    selenoid_browsers_last_versions: 3
+    selenoid_browsers_last_versions: 2
     selenoid_browsers:
       - chrome
     selenoid_ui_version: 1.10.10

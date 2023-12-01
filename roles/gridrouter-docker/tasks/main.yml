@@ -73,6 +73,19 @@
     password: "{{ grid_router_qouta_password}}"
     mode: 0640
 
+- name: Check if Docker network exists
+  become: yes
+  become_user: root
+  shell: "docker network inspect ggr_network"
+  ignore_errors: true
+  register: network_info
+
+- name: Create Docker bridge network if it doesn't exist
+  become: yes
+  become_user: root
+  command: "docker network create --driver=bridge ggr_network"
+  when: network_info.rc != 0 
+
 - name: Grid Router | Run Grid Router container
   become: yes
   become_user: root
@@ -89,6 +102,22 @@
       DOCKER_API_VERSION: "{{ grid_router_docker_api_version }}"
     ports:
     - "{{ grid_router_port }}:4444"
+    networks:
+      - name: ggr_network
+
+- name: GGR UI
+  become: yes
+  become_user: root
+  docker_container:
+    name: ggr-ui
+    restart_policy: always
+    image: "aerokube/ggr-ui:1.1.2"
+    volumes:
+      - "{{ grid_router_path }}:/etc/grid-router:ro"
+    ports:
+    - "8888:8888"
+    networks:
+      - name: ggr_network
 
 - name: Reload GGR
   become: yes
