@@ -105,7 +105,7 @@
     networks:
       - name: ggr_network
 
-- name: GGR UI
+- name: Set up GGR UI
   become: yes
   become_user: root
   docker_container:

@@ -45,51 +45,31 @@
   with_items: "{{ selenoid_container_id.stdout_lines | default([]) }}"
   when: selenoid_container_id.stdout_lines | default([]) | length > 0
 
-- name: "Create docker network"
+- name: Download Configuration Manager
   become: yes
   become_user: root
-  ansible.builtin.docker_network:
-    name: "selenoid_network"
-    driver: bridge  
+  raw: wget -O /usr/bin/cm "https://github.com/aerokube/cm/releases/download/{{ selenoid_cm_version }}/cm_linux_amd64"
 
-- name: Selenoid | Run CM container, download browser images, and run selenoid
+- name: Get Access to Configuration Manager
   become: yes
   become_user: root
-  docker_container:
-    name: cm
-    image: "aerokube/cm:{{ selenoid_cm_version }}"
-    networks:
-      - name: selenoid_network
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "{{ selenoid_config_dir }}:/root"
-    env:
-      OVERRIDE_HOME: "{{ selenoid_config_dir }}"
-      DOCKER_API_VERSION: "{{ selenoid_docker_api_version }}"
-    command: >
-      selenoid start
-        --version {{ selenoid_version }}
-        --tmpfs {{ selenoid_tmpfs }}
-        --env DOCKER_API_VERSION={{ selenoid_docker_api_version }}
-        --browsers {% for browser in selenoid_browsers -%}{{ browser }}{%- if not loop.last -%},{%- endif -%}{%- endfor %}
-        --last-versions {{ selenoid_browsers_last_versions }}
-        --force
-        --vnc
-        --args "-limit {{ selenoid_limit }} -listen :{{ selenoid_listen_port }} -timeout {{ selenoid_timeout }} -disable-queue"
-    state: started 
+  raw: chmod +x /usr/bin/cm
 
-- name: Selenoid UI | Run Selenoid UI container
+- name: Install Selenoid
   become: yes
   become_user: root
-  docker_container:
-    name: selenoid-ui
-    image: "aerokube/selenoid-ui:{{ selenoid_ui_version }}"
-    networks:
-      - name: selenoid_network
-    links:
-      - selenoid
-    ports:
-      - "8080:8080"
-    command: ["--selenoid-uri", "http://selenoid:4444"]
-    state: started
+  raw: /usr/bin/cm selenoid start selenoid start
+      --version {{ selenoid_version }}
+      --tmpfs {{ selenoid_tmpfs }}
+      --env DOCKER_API_VERSION={{ selenoid_docker_api_version }}
+      --browsers {% for browser in selenoid_browsers -%}{{ browser }}{%- if not loop.last -%},{%- endif -%}{%- endfor %}
+      --last-versions {{ selenoid_browsers_last_versions }}
+      --force
+      --vnc
+      --args "-limit {{ selenoid_limit }} -listen :{{ selenoid_listen_port }} -timeout {{ selenoid_timeout }} -disable-queue"
+
+- name: Install Selenoid UI
+  become: yes
+  become_user: root
+  raw: /usr/bin/cm selenoid-ui start --version {{ selenoid_ui_version }}
       

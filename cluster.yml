@@ -9,10 +9,10 @@
     grid_router_regions:
       - name: "company"
         hosts:
-          - name: 54.144.31.62
+          - name: "{{ hostvars['selenoid1']['ansible_host'] }}"
             port: 4444
             browser_count: 4
-          - name: 54.86.194.83
+          - name: "{{ hostvars['selenoid2']['ansible_host'] }}"
             port: 4444
             browser_count: 4  
 
@@ -22,6 +22,7 @@
         versions:
           - "118.0"
           - "119.0"
+
   roles:
     - gridrouter-docker
 
