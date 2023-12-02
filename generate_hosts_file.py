@@ -1,28 +1,31 @@
 import argparse
+from configparser import ConfigParser
 
 def generate_hosts_file(pem_path, ggr_ip, selenoid1_ip, selenoid2_ip):
-    ansible_vars = {
+    config = ConfigParser()
+
+    config['all:vars'] = {
         'ansible_python_interpreter': '/usr/bin/python3',
         'ansible_user': 'ubuntu',
         'ansible_ssh_private_key_file': pem_path,
         'ansible_ssh_common_args': "'-o StrictHostKeyChecking=no'"
     }
 
-    ansible_vars_string = "\n".join(f"{key}={value}" for key, value in ansible_vars.items())
+    config['ggr'] = {
+        'ggr ansible_host': ggr_ip
+    }
 
-    hosts_content = f"""[all:vars]
-{ansible_vars_string}
+    config['selenoid-nodes'] = {
+        'selenoid1 ansible_host': selenoid1_ip,
+        'selenoid2 ansible_host': selenoid2_ip
+    }
 
-[ggr]
-ggr ansible_host={ggr_ip}
-
-[selenoid-nodes]
-selenoid1 ansible_host={selenoid1_ip}
-selenoid2 ansible_host={selenoid2_ip}
-"""
-
-    with open('hosts', 'w') as file:
-        file.write(hosts_content)
+    with open('hosts.ini', 'w') as file:
+        for section in config.sections():
+            file.write(f"[{section}]\n")
+            for key, value in config[section].items():
+                file.write(f"{key}={value}\n")
+            file.write("\n")
 
     print("hosts.ini file created successfully.")
 
