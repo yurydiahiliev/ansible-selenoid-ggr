@@ -47,3 +47,22 @@
   roles:
     - selenoid-docker
 
+- hosts: ggr
+  tasks:
+    - name: Print GGR host
+      command: echo http://{{ hostvars['ggr']['ansible_host'] }}:8080
+      delegate_to: ggr
+      register: grid_router_host
+
+    - debug:
+        var: grid_router_host.stdout_lines   
+    
+    - name: Check grid-router status
+      command: "curl -s http://{{ hostvars['ggr']['ansible_host'] }}:8888/status"
+      delegate_to: ggr
+      ignore_errors: yes
+      register: grid_router_status
+
+    - debug:
+        var: grid_router_status.stdout_lines    
+
