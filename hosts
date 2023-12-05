@@ -5,8 +5,8 @@ ansible_ssh_private_key_file=~/.ssh/test.pem
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [ggr]
-ggr ansible_host=52.54.126.137
+ggr ansible_host=54.197.66.247
 
 [selenoid-nodes]
-selenoid1 ansible_host=3.94.117.226
-selenoid2 ansible_host=34.207.225.37
+selenoid1 ansible_host=100.26.184.241
+selenoid2 ansible_host=52.90.25.199

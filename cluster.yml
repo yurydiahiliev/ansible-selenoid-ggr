@@ -2,9 +2,12 @@
 - hosts: ggr
   vars:
     grid_router_version: 1.7.1
+    grid_router_ui_version: 1.1.2
     grid_router_path: "{{ ansible_env.HOME }}/grid-router"
     grid_router_qouta_path: "{{ ansible_env.HOME }}/grid-router/quota"
     grid_router_port: 4445
+    selenoid_ui_version: 1.10.10
+    selenoid_ui_port: 8080 
 
     grid_router_regions:
       - name: "company"
