@@ -57,7 +57,7 @@
 - name: Install Selenoid
   become: yes
   become_user: root
-  raw: /usr/bin/cm selenoid start selenoid start
+  raw: /usr/bin/cm selenoid start
       --version {{ selenoid_version }}
       --tmpfs {{ selenoid_tmpfs }}
       --env DOCKER_API_VERSION={{ selenoid_docker_api_version }}
